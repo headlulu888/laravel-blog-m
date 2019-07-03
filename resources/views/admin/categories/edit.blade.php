@@ -17,6 +17,7 @@
             <div class="box">
                 <div class="box-header with-border">
                     <h3 class="box-title">Меняем категорию</h3>
+                    @include('admin.errors')
                 </div>
                 <div class="box-body">
                     {!! Form::open(['route' => ['categories.update', $category->id], 'method' => 'put' ]) !!}
