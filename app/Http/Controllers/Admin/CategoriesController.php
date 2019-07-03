@@ -30,4 +30,11 @@ class CategoriesController extends Controller
 
         return redirect()->route('categories.index');
     }
+
+    public function edit($id)
+    {
+        $category = Category::find($id);
+
+        return view('admin.categories.edit', compact('category'));
+    }
 }
