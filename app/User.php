@@ -4,12 +4,23 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class User
+ * @package App
+ */
 class User extends Authenticatable
 {
     use Notifiable;
 
+    /**
+     *
+     */
     const IS_BANNED = 1;
+    /**
+     *
+     */
     const IS_ACTIVE = 0;
 
     /**
@@ -18,7 +29,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email'
     ];
 
     /**
@@ -30,65 +41,108 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function posts()
     {
         return $this->hasMany(Comment::class);
     }
 
-    public function add($fields)
+    /**
+     * @param $fields
+     * @return User
+     */
+    public static function add($fields)
     {
-        $user = new self;
+        $user = new static;
         $user->fill($fields);
-        $user->password = bcrypt($fields['password']);
         $user->save();
 
         return $user;
     }
 
+    /**
+     * @param $fields
+     */
     public function edit($fields)
     {
         $this->fill($fields);
-        $this->passworld = bcrypt($fields['password']);
         $this->save();
     }
 
+    public function generatePassword($password)
+    {
+        if ($password != null) {
+            $this->password = bcrypt($password);
+            $this->save();
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function remove()
     {
+        $this->removeAvatar();
         $this->delete();
     }
 
+    /**
+     * @param $image
+     */
     public function uploadAvatar($image)
     {
         if ($image == null) { return; }
 
-        Storage::delete('uploads/' . $this->image);
+        $this->removeAvatar();
+
         $filename = str_random(10) . '.' . $image->extension();
-        $image->saveAs('uploads', $filename);
-        $this->image = $filename;
+        $image->storeAs('uploads', $filename);
+        $this->avatar = $filename;
         $this->save();
     }
 
-    public function getImage()
+    public function removeAvatar()
     {
-        if ($this->image == null) {
-            return '/img/no-user-image.png';
+        if ($this->avatar != null) {
+            Storage::delete('uploads/' . $this->avatar);
         }
-
-        return '/uploads/' . $this->image;
     }
 
+    /**
+     * @return string
+     */
+    public function getImage()
+    {
+        if ($this->avatar == null) {
+            return '/img/no-image.png';
+        }
+
+        return '/uploads/' . $this->avatar;
+    }
+
+    /**
+     *
+     */
     public function makeAdmin()
     {
         $this->is_admin = 1;
         $this->save();
     }
 
+    /**
+     * @param string $value
+     */
     public function makeNormal($value = '')
     {
         $this->is_admin = 0;
         $this->save();
     }
 
+    /**
+     * @param $value
+     */
     public function toggleAdmin($value)
     {
         if ($value == null) {
@@ -98,18 +152,27 @@ class User extends Authenticatable
         return $this->makeAdmin();
     }
 
+    /**
+     *
+     */
     public function ban()
     {
         $this->status = User::IS_BANNED;
         $this->save();
     }
 
+    /**
+     *
+     */
     public function unban()
     {
         $this->status = User::IS_ACTIVE;
         $this->save();
     }
 
+    /**
+     * @param $value
+     */
     public function toggleBan($value)
     {
         if ($value == null) {
