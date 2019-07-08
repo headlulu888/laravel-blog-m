@@ -45,14 +45,14 @@
                         <tr>
                             <td>{{ $post->id }}</td>
                             <td>{{ $post->title }}</td>
-                            <td>Обучение</td>
-                            <td>Laravel, PHP</td>
+                            <td>{{ $post->getCategoryTitle() }}</td>
+                            <td>{{ $post->getTagsTitles() }}</td>
                             <td>
                                 <img src="{{ $post->getImage() }}" alt="" width="100">
                             </td>
                             <td>
                                 <a href="{{ route('posts.edit', $post->id) }}" class="fa fa-pencil"></a>
-                                {{Form::open(['route'=>['categories.destroy', $category->id], 'method'=>'delete'])}}
+                                {{Form::open(['route'=>['posts.destroy', $post->id], 'method'=>'delete'])}}
                                 <button onclick="return confirm('are you sure?')" type="submit" class="delete">
                                     <i class="fa fa-remove"></i>
                                 </button>

@@ -18,12 +18,12 @@ class Post extends Model
 
     public function category()
     {
-        return $this->hasOne(Category::class);
+        return $this->belongsTo(Category::class);
     }
 
     public function author()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function tags()
@@ -74,9 +74,12 @@ class Post extends Model
         }
     }
 
+    /**
+     * @param $image
+     */
     public function uploadImage($image)
     {
-        if ($image == null) { return;
+        if ($image == null) return;
 
         $this->removeImage();
         Storage::delete('uploads/' . $this->image);
@@ -155,5 +158,20 @@ class Post extends Model
     {
         $date = Carbon::createFromFormat('d/m/y', $value)->format('Y-m-d');
         $this->attributes['date'] = $date;
+    }
+
+    public function getCategoryTitle()
+    {
+        return $this->category != null
+            ? $this->category->title
+            : 'Нет категории';
+    }
+
+    public function getTagsTitles()
+    {
+        return (!$this->tags->isEmpty())
+            ? implode(', ', $this->tags->pluck('title')->all())
+            : 'Нет тегов';
+
     }
 }
