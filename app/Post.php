@@ -7,25 +7,47 @@ use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Class Post
+ * @package App
+ */
 class Post extends Model
 {
     use Sluggable;
 
+    /**
+     *
+     */
     const IS_DRAFT = 0;
+    /**
+     *
+     */
     const IS_PUBLIC = 1;
 
+    /**
+     * @var array
+     */
     protected $fillable = ['title', 'content', 'date'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function author()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function tags()
     {
         return $this->belongsToMany(
@@ -36,6 +58,9 @@ class Post extends Model
         );
     }
 
+    /**
+     * @return array
+     */
     public function sluggable()
     {
         return [
@@ -45,6 +70,10 @@ class Post extends Model
         ];
     }
 
+    /**
+     * @param $fields
+     * @return Post
+     */
     public static function add($fields)
     {
         $post = new self;
@@ -55,18 +84,27 @@ class Post extends Model
         return $post;
     }
 
+    /**
+     * @param $fields
+     */
     public function edit($fields)
     {
         $this->fill($fields);
         $this->save();
     }
 
+    /**
+     * @throws \Exception
+     */
     public function remove()
     {
         $this->removeImage();
         $this->delete();
     }
 
+    /**
+     *
+     */
     public function removeImage()
     {
         if ($this->image != null) {
@@ -89,6 +127,9 @@ class Post extends Model
         $this->save();
     }
 
+    /**
+     * @param $id
+     */
     public function setCategory($id)
     {
         if ($id == null) { return; }
@@ -97,6 +138,9 @@ class Post extends Model
         $this->save();
     }
 
+    /**
+     * @param $ids
+     */
     public function setTags($ids)
     {
         if ($ids == null) { return; }
@@ -104,18 +148,27 @@ class Post extends Model
         $this->tags()->sync($ids);
     }
 
+    /**
+     *
+     */
     public function setDraft()
     {
         $this->status = Post::IS_DRAFT;
         $this->save();
     }
 
+    /**
+     *
+     */
     public function setPublic()
     {
         $this->status = Post::IS_PUBLIC;
         $this->save();
     }
 
+    /**
+     * @param $value
+     */
     public function toggleStatus($value)
     {
         if ($value == null) {
@@ -125,18 +178,27 @@ class Post extends Model
         return $this->setPublic();
     }
 
+    /**
+     *
+     */
     public function setFeatured()
     {
         $this->is_featured = 1;
         $this->save();
     }
 
+    /**
+     *
+     */
     public function setStandart()
     {
         $this->is_featured = 0;
         $this->save();
     }
 
+    /**
+     * @param $value
+     */
     public function toggleFeatured($value)
     {
         if ($value == null) {
@@ -146,6 +208,9 @@ class Post extends Model
         return $this->setFeatured();
     }
 
+    /**
+     * @return string
+     */
     public function getImage()
     {
         if ($this->image == null) {
@@ -154,12 +219,29 @@ class Post extends Model
         return '/uploads/' . $this->image;
     }
 
+    /**
+     * @param $value
+     */
     public function setDateAttributes($value)
     {
         $date = Carbon::createFromFormat('d/m/y', $value)->format('Y-m-d');
         $this->attributes['date'] = $date;
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
+    public function getDateAttributes($value)
+    {
+        $date = Carbon::createFromFormat('Y-m-d', $value)->format('d/m/y');
+
+        return $date;
+    }
+
+    /**
+     * @return string
+     */
     public function getCategoryTitle()
     {
         return $this->category != null
@@ -167,6 +249,9 @@ class Post extends Model
             : 'Нет категории';
     }
 
+    /**
+     * @return string
+     */
     public function getTagsTitles()
     {
         return (!$this->tags->isEmpty())

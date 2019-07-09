@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1df0dc78a65fb99b28772aebabd337aa",
+    "content-hash": "fd0fb6e5ef07f912abd2d65c314a8a25",
     "packages": [
         {
             "name": "cocur/slugify",
@@ -2802,6 +2802,56 @@
             ],
             "description": "A simple package to create a make:repository command for Laravel 5+",
             "time": "2018-10-30T14:53:59+00:00"
+        },
+        {
+            "name": "laravel/homestead",
+            "version": "v9.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/homestead.git",
+                "reference": "1302ab4ab746b03d121c3fead3818ded79db1eaa"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/homestead/zipball/1302ab4ab746b03d121c3fead3818ded79db1eaa",
+                "reference": "1302ab4ab746b03d121c3fead3818ded79db1eaa",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1",
+                "symfony/console": "~3.0||~4.0",
+                "symfony/process": "~3.0||~4.0",
+                "symfony/yaml": "~3.0||~4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0"
+            },
+            "bin": [
+                "bin/homestead"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "4.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Homestead\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "description": "A virtual machine for web artisans.",
+            "time": "2019-07-03T20:00:01+00:00"
         },
         {
             "name": "mockery/mockery",
