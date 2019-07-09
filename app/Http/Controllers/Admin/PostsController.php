@@ -108,11 +108,14 @@ class PostsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
+     * @throws \Exception
      */
     public function destroy($id)
     {
-        //
+        Post::find($id)->remove();
+
+        return redirect()->route('posts.index');
     }
 }
